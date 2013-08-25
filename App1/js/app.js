@@ -55,7 +55,7 @@ var $__generatorWrap = function(generator) {
 };
 function go_(machine, step) {
   while (!step.done) {
-    var arr = step.value(), state = $traceurRuntime.elementGet(arr, 0), value = $traceurRuntime.elementGet(arr, 1);
+    var arr = step.value(), state = arr[0], value = arr[1];
     switch (state) {
       case "park":
         setTimeout(function() {
