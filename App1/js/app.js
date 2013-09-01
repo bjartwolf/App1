@@ -53,13 +53,13 @@ var $__generatorWrap = function(generator) {
     }
   });
 };
-function go_(machine, step) {
+function go2(machine, step) {
   while (!step.done) {
     var arr = step.value(), state = arr[0], value = arr[1];
     switch (state) {
       case "park":
         setTimeout(function() {
-          go_(machine, step);
+          go2(machine, step);
         }, 0);
         return;
         break;
@@ -73,7 +73,7 @@ function go_(machine, step) {
 }
 function go(machine) {
   var gen = machine();
-  go_(gen, gen.next());
+  go2(gen, gen.next());
 }
 function put(chan, val) {
   return function() {
@@ -99,87 +99,6 @@ var c = [];
 go(function() {
   var $that = this;
   var $arguments = arguments;
-  var $state = 13;
-  var $storedException;
-  var $finallyFallThrough;
-  var i;
-  var $G = {
-    GState: 0,
-    current: undefined,
-    yieldReturn: undefined,
-    innerFunction: function($yieldSent, $yieldAction) {
-      while (true) switch ($state) {
-        case 13:
-          i = 0;
-          $state = 14;
-          break;
-        case 14:
-          if (i < 10) {
-            $state = 0;
-            break;
-          } else {
-            $state = 8;
-            break;
-          }
-        case 0:
-          this.current = put(c, i);
-          $state = 1;
-          return true;
-        case 1:
-          if ($yieldAction == 1) {
-            $yieldAction = 0;
-            throw $yieldSent;
-          }
-          $state = 3;
-          break;
-        case 3:
-          console.log("process one put", i);
-          $state = 5;
-          break;
-        case 5:
-          i++;
-          $state = 14;
-          break;
-        case 8:
-          this.current = put(c, null);
-          $state = 10;
-          return true;
-        case 10:
-          if ($yieldAction == 1) {
-            $yieldAction = 0;
-            throw $yieldSent;
-          }
-          $state = 12;
-          break;
-        case 12:
-          $state = -2;
-        case -2:
-          return false;
-        case -3:
-          throw $storedException;
-        default:
-          throw "traceur compiler bug: invalid state in state machine" + $state;
-      }
-    },
-    moveNext: function($yieldSent, $yieldAction) {
-      while (true) try {
-        return this.innerFunction($yieldSent, $yieldAction);
-      } catch ($caughtException) {
-        $storedException = $caughtException;
-        switch ($state) {
-          default:
-            this.GState = 3;
-            $state = -2;
-            throw $storedException;
-        }
-      }
-    }
-  };
-  return $__generatorWrap($G);
-});
-go(function() {
-  var $that = this;
-  var $arguments = arguments;
   var $state = 7;
   var $storedException;
   var $finallyFallThrough;
@@ -195,7 +114,7 @@ go(function() {
             $state = 0;
             break;
           } else {
-            $state = 11;
+            $state = 8;
             break;
           }
         case 0:
@@ -214,20 +133,10 @@ go(function() {
           $state = 5;
           break;
         case 5:
-          if (val == null) {
-            $state = 11;
-            break;
-          } else {
-            $state = 8;
-            break;
-          }
-        case 8:
-          {
-            console.log("process two took", val);
-          }
+          document.getElementById("acceleration").innerHTML = val;
           $state = 7;
           break;
-        case 11:
+        case 8:
           $state = -2;
         case -2:
           return false;
@@ -253,3 +162,71 @@ go(function() {
   };
   return $__generatorWrap($G);
 });
+(function() {
+  var reportInterval = 0;
+  var accelerometer;
+  var page = WinJS.UI.Pages.define("/default.html", {ready: function(element, options) {
+      accelerometer = Windows.Devices.Sensors.Accelerometer.getDefault();
+      if (accelerometer) {
+        var minimumReportInterval = accelerometer.minimumReportInterval;
+        reportInterval = minimumReportInterval > 16 ? minimumReportInterval: 16;
+        accelerometer.reportInterval = reportInterval;
+        accelerometer.addEventListener("readingchanged", onDataChanged);
+      } else {
+        WinJS.log && WinJS.log("No accelerometer found in your machine. Put one in there.", "sample", "error");
+      }
+    }});
+  function onDataChanged(e) {
+    var reading = e.reading;
+    var xvalue = reading.accelerationX.toFixed(2);
+    go(function() {
+      var $that = this;
+      var $arguments = arguments;
+      var $state = 0;
+      var $storedException;
+      var $finallyFallThrough;
+      var $G = {
+        GState: 0,
+        current: undefined,
+        yieldReturn: undefined,
+        innerFunction: function($yieldSent, $yieldAction) {
+          while (true) switch ($state) {
+            case 0:
+              this.current = put(c, xvalue);
+              $state = 1;
+              return true;
+            case 1:
+              if ($yieldAction == 1) {
+                $yieldAction = 0;
+                throw $yieldSent;
+              }
+              $state = 3;
+              break;
+            case 3:
+              $state = -2;
+            case -2:
+              return false;
+            case -3:
+              throw $storedException;
+            default:
+              throw "traceur compiler bug: invalid state in state machine" + $state;
+          }
+        },
+        moveNext: function($yieldSent, $yieldAction) {
+          while (true) try {
+            return this.innerFunction($yieldSent, $yieldAction);
+          } catch ($caughtException) {
+            $storedException = $caughtException;
+            switch ($state) {
+              default:
+                this.GState = 3;
+                $state = -2;
+                throw $storedException;
+            }
+          }
+        }
+      };
+      return $__generatorWrap($G);
+    });
+  }
+})();
