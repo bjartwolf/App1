@@ -6,7 +6,7 @@
 
     switch (state) {
       case "park":
-        setTimeout(function() { go2(machine, step); },0);
+        setImmediate(() => { go2(machine, step); });
         return;
         break;
       case "continue":
@@ -24,7 +24,7 @@ function go(machine) {
 }
 
 function put(chan, val) {
-  return function() {
+  return () => {
     if(chan.length == 0) {
       chan.unshift(val);
       return ["continue", null];
@@ -35,7 +35,7 @@ function put(chan, val) {
 }
 
 function take(chan) {
-  return function() {
+  return () => {
     if(chan.length == 0) {
       return ["park", null];
     } else {
@@ -56,6 +56,11 @@ go(function* () {
   }
 });
 
+    // Need a select statement that picks from an available channel... syntax without macros?
+    // Select has to be a function
+    // That function can have input, maybe using something elegant from ES6 or just a simple key/value thing with
+    // channels as keys and functions as values
+    // 
 
 (function () {
     var reportInterval = 0;
