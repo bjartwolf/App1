@@ -114,8 +114,9 @@ function take(chan) {
 }
 var c = [];
 var timer = [];
+var timeOut = [];
 var run = function() {
-  select([c, timer], [function() {
+  select([c, timer, timeOut], [function() {
     var $that = this;
     var $arguments = arguments;
     var $state = 0;
@@ -210,6 +211,67 @@ var run = function() {
             break;
           case 7:
             run();
+            $state = 9;
+            break;
+          case 9:
+            $state = -2;
+          case -2:
+            return false;
+          case -3:
+            throw $storedException;
+          default:
+            throw "traceur compiler bug: invalid state in state machine" + $state;
+        }
+      },
+      moveNext: function($yieldSent, $yieldAction) {
+        while (true) try {
+          return this.innerFunction($yieldSent, $yieldAction);
+        } catch ($caughtException) {
+          $storedException = $caughtException;
+          switch ($state) {
+            default:
+              this.GState = 3;
+              $state = -2;
+              throw $storedException;
+          }
+        }
+      }
+    };
+    return $__generatorWrap($G);
+  }, function() {
+    var $that = this;
+    var $arguments = arguments;
+    var $state = 0;
+    var $storedException;
+    var $finallyFallThrough;
+    var tid;
+    var $G = {
+      GState: 0,
+      current: undefined,
+      yieldReturn: undefined,
+      innerFunction: function($yieldSent, $yieldAction) {
+        while (true) switch ($state) {
+          case 0:
+            this.current = take(timeOut);
+            $state = 1;
+            return true;
+          case 1:
+            if ($yieldAction == 1) {
+              $yieldAction = 0;
+              throw $yieldSent;
+            }
+            $state = 3;
+            break;
+          case 3:
+            tid = $yieldSent;
+            $state = 5;
+            break;
+          case 5:
+            document.getElementById("timer").innerHTML = "TIMEOUT";
+            $state = 7;
+            break;
+          case 7:
+            document.getElementById("acceleration").innerHTML = "TIMEOUT";
             $state = 9;
             break;
           case 9:
@@ -357,7 +419,6 @@ run();
       return $__generatorWrap($G);
     });
   }), 76);
-  timeOut = [];
   setTimeout((function() {
     go(function() {
       var $that = this;

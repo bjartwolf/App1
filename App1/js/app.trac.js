@@ -65,8 +65,9 @@ function take(chan) {
 
 var c = [];
 var timer = [];
+var timeOut = [];
 var run = function (){
-    select([c, timer], [
+    select([c, timer, timeOut], [
         function*(){
             var acc = yield take(c);
             document.getElementById("acceleration").innerHTML = acc;
@@ -76,13 +77,12 @@ var run = function (){
             var tid = yield take(timer);
             document.getElementById("timer").innerHTML = tid;
             run();
-        }/*,
+        },
         function*(){
             var tid = yield take(timeOut);
             document.getElementById("timer").innerHTML = "TIMEOUT";
             document.getElementById("acceleration").innerHTML = "TIMEOUT";
-            run();
-        }*/
+        }
         ]);
     };
 run();
@@ -119,7 +119,7 @@ run();
     	});
     },76)
 
-    timeOut = [];
+
     setTimeout( () => {
         go(function* () {
             yield put(timeOut, 99);
