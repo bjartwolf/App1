@@ -1,28 +1,20 @@
-﻿/*function select(channels, machines) {
-    for (step of steps) {
-        console.log(step);
-    }
-
-    while(!steps.done) {
-        var arr   = step.value(),
-            state = arr[0],
-            value = arr[1];
-
-        switch (state) {
-            case "park":
-                setImmediate(() => { go2(machine, step); });
-        return;
-        break;
-        case "continue":
-        step = machine.next(value);
-        break;
-      default:
-        break;
+﻿function select(channels, machines) {
+    var channel;
+    var i;
+    // Find the index of a non-empty channel
+    for (i = 0; i < channels.length; i++) {
+        if (channels[i].length != 0) {
+            channel = channels[i];
+            break;
         }
     }
-  
+    if (channel  == undefined) {
+        setImmediate(()=> {select(channels, machines);});
+    } else {
+        // execute channel, hopefully channel is in closure of machine
+        go(machines[i]);
+    }  
 }
-*/
 
 
 function go2(machine, step) {
@@ -73,45 +65,20 @@ function take(chan) {
 
 var c = [];
 var timer = [];
-/*
-go(function* () {
-	while(true) {
-		// infinite loops ftw!
-		// just need to build with traceur in node.js to produce valid js...
-	    var val = yield take(c);
-   	    document.getElementById("acceleration").innerHTML = val;
-  }
-});
-*/
-/*
-go(function* () {
-    while(true) {
-        // infinite loops ftw!
-        // just need to build with traceur in node.js to produce valid js...
-        var val = yield take(timer);
-        document.getElementById("timer").innerHTML = val;
-    }
-});
-*/
-    // Need a select statement that picks from an available channel... syntax without macros?
-    // Select has to be a function
-    // That function can have input, maybe using something elegant from ES6 or just a simple key/value thing with
-    // channels as keys and functions as values        // select, hardcoded for now
-
-        
-
-go(function* () { 
-    while(true){
-        var tid = yield take(timer);
-        document.getElementById("timer").innerHTML = tid;
-    }
-});
-go(function* () { 
-    while(true){
-        var acc = yield take(c);
-        document.getElementById("acceleration").innerHTML = acc;
-    }
-});
+var run = function (){
+    select([c, timer], [
+        function*(){
+            var acc = yield take(c);
+            document.getElementById("acceleration").innerHTML = acc;
+            run()
+        },
+        function*(){
+            var tid = yield take(timer);
+            document.getElementById("timer").innerHTML = "TIMEOUT";
+            run()
+        }]);
+        };
+        run();
 
 
 (function () {
@@ -147,7 +114,7 @@ go(function* () {
     	go(function* () {
     	    yield put(timer, i++);
     	});
-    },1000)
+    },2000)
 
     //timeOut = [];
     //setTimeout( () => {
