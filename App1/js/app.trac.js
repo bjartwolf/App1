@@ -46,7 +46,7 @@ function take(chan) {
 }
 
 var c = [];
-
+var timer = [];
 go(function* () {
 	while(true) {
 		// infinite loops ftw!
@@ -54,6 +54,15 @@ go(function* () {
 	    var val = yield take(c);
    	    document.getElementById("acceleration").innerHTML = val;
   }
+});
+
+go(function* () {
+    while(true) {
+        // infinite loops ftw!
+        // just need to build with traceur in node.js to produce valid js...
+        var val = yield take(timer);
+        document.getElementById("timer").innerHTML = val;
+    }
 });
 
     // Need a select statement that picks from an available channel... syntax without macros?
@@ -89,4 +98,12 @@ go(function* () {
 			yield put(c, xvalue);
     	});
     }
+
+    var i = 0;
+    setInterval( () => {
+        go(function* () {
+    	        yield put(timer, i++);
+    	    });
+    },1000)
+
 })();
