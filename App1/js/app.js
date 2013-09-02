@@ -103,73 +103,7 @@ go(function() {
   var $state = 7;
   var $storedException;
   var $finallyFallThrough;
-  var val;
-  var $G = {
-    GState: 0,
-    current: undefined,
-    yieldReturn: undefined,
-    innerFunction: function($yieldSent, $yieldAction) {
-      while (true) switch ($state) {
-        case 7:
-          if (true) {
-            $state = 0;
-            break;
-          } else {
-            $state = 8;
-            break;
-          }
-        case 0:
-          this.current = take(c);
-          $state = 1;
-          return true;
-        case 1:
-          if ($yieldAction == 1) {
-            $yieldAction = 0;
-            throw $yieldSent;
-          }
-          $state = 3;
-          break;
-        case 3:
-          val = $yieldSent;
-          $state = 5;
-          break;
-        case 5:
-          document.getElementById("acceleration").innerHTML = val;
-          $state = 7;
-          break;
-        case 8:
-          $state = -2;
-        case -2:
-          return false;
-        case -3:
-          throw $storedException;
-        default:
-          throw "traceur compiler bug: invalid state in state machine" + $state;
-      }
-    },
-    moveNext: function($yieldSent, $yieldAction) {
-      while (true) try {
-        return this.innerFunction($yieldSent, $yieldAction);
-      } catch ($caughtException) {
-        $storedException = $caughtException;
-        switch ($state) {
-          default:
-            this.GState = 3;
-            $state = -2;
-            throw $storedException;
-        }
-      }
-    }
-  };
-  return $__generatorWrap($G);
-});
-go(function() {
-  var $that = this;
-  var $arguments = arguments;
-  var $state = 7;
-  var $storedException;
-  var $finallyFallThrough;
-  var val;
+  var tid;
   var $G = {
     GState: 0,
     current: undefined,
@@ -196,11 +130,78 @@ go(function() {
           $state = 3;
           break;
         case 3:
-          val = $yieldSent;
+          tid = $yieldSent;
           $state = 5;
           break;
         case 5:
-          document.getElementById("timer").innerHTML = val;
+          document.getElementById("timer").innerHTML = tid;
+          $state = 7;
+          break;
+        case 8:
+          $state = -2;
+        case -2:
+          return false;
+        case -3:
+          throw $storedException;
+        default:
+          throw "traceur compiler bug: invalid state in state machine" + $state;
+      }
+    },
+    moveNext: function($yieldSent, $yieldAction) {
+      while (true) try {
+        return this.innerFunction($yieldSent, $yieldAction);
+      } catch ($caughtException) {
+        $storedException = $caughtException;
+        switch ($state) {
+          default:
+            this.GState = 3;
+            $state = -2;
+
+            throw $storedException;
+        }
+      }
+    }
+  };
+  return $__generatorWrap($G);
+});
+go(function() {
+  var $that = this;
+  var $arguments = arguments;
+  var $state = 7;
+  var $storedException;
+  var $finallyFallThrough;
+  var acc;
+  var $G = {
+    GState: 0,
+    current: undefined,
+    yieldReturn: undefined,
+    innerFunction: function($yieldSent, $yieldAction) {
+      while (true) switch ($state) {
+        case 7:
+          if (true) {
+            $state = 0;
+            break;
+          } else {
+            $state = 8;
+            break;
+          }
+        case 0:
+          this.current = take(c);
+          $state = 1;
+          return true;
+        case 1:
+          if ($yieldAction == 1) {
+            $yieldAction = 0;
+            throw $yieldSent;
+          }
+          $state = 3;
+          break;
+        case 3:
+          acc = $yieldSent;
+          $state = 5;
+          break;
+        case 5:
+          document.getElementById("acceleration").innerHTML = acc;
           $state = 7;
           break;
         case 8:

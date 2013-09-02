@@ -1,9 +1,35 @@
-﻿function go2(machine, step) {
+﻿/*function select(channels, machines) {
+    for (step of steps) {
+        console.log(step);
+    }
+
+    while(!steps.done) {
+        var arr   = step.value(),
+            state = arr[0],
+            value = arr[1];
+
+        switch (state) {
+            case "park":
+                setImmediate(() => { go2(machine, step); });
+        return;
+        break;
+        case "continue":
+        step = machine.next(value);
+        break;
+      default:
+        break;
+        }
+    }
+  
+}
+*/
+
+
+function go2(machine, step) {
   while(!step.done) {
     var arr   = step.value(),
         state = arr[0],
         value = arr[1];
-
     switch (state) {
       case "park":
         setImmediate(() => { go2(machine, step); });
@@ -47,6 +73,7 @@ function take(chan) {
 
 var c = [];
 var timer = [];
+/*
 go(function* () {
 	while(true) {
 		// infinite loops ftw!
@@ -55,7 +82,8 @@ go(function* () {
    	    document.getElementById("acceleration").innerHTML = val;
   }
 });
-
+*/
+/*
 go(function* () {
     while(true) {
         // infinite loops ftw!
@@ -64,12 +92,27 @@ go(function* () {
         document.getElementById("timer").innerHTML = val;
     }
 });
-
+*/
     // Need a select statement that picks from an available channel... syntax without macros?
     // Select has to be a function
     // That function can have input, maybe using something elegant from ES6 or just a simple key/value thing with
-    // channels as keys and functions as values
-    // 
+    // channels as keys and functions as values        // select, hardcoded for now
+
+        
+
+go(function* () { 
+    while(true){
+        var tid = yield take(timer);
+        document.getElementById("timer").innerHTML = tid;
+    }
+});
+go(function* () { 
+    while(true){
+        var acc = yield take(c);
+        document.getElementById("acceleration").innerHTML = acc;
+    }
+});
+
 
 (function () {
     var reportInterval = 0;
@@ -101,9 +144,15 @@ go(function* () {
 
     var i = 0;
     setInterval( () => {
-        go(function* () {
-    	        yield put(timer, i++);
-    	    });
+    	go(function* () {
+    	    yield put(timer, i++);
+    	});
     },1000)
 
+    //timeOut = [];
+    //setTimeout( () => {
+    //    go(function* () {
+    //        yield put(timeOut, 99);
+    //    });
+    //},2500)
 })();
