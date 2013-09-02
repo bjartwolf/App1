@@ -205,7 +205,7 @@ var run = function() {
             $state = 5;
             break;
           case 5:
-            document.getElementById("timer").innerHTML = "TIMEOUT";
+            document.getElementById("timer").innerHTML = tid;
             $state = 7;
             break;
           case 7:
@@ -246,9 +246,7 @@ run();
   var page = WinJS.UI.Pages.define("/default.html", {ready: function(element, options) {
       accelerometer = Windows.Devices.Sensors.Accelerometer.getDefault();
       if (accelerometer) {
-        var minimumReportInterval = accelerometer.minimumReportInterval;
-        reportInterval = minimumReportInterval > 16 ? minimumReportInterval: 16;
-        accelerometer.reportInterval = reportInterval;
+        accelerometer.reportInterval = 200;
         accelerometer.addEventListener("readingchanged", onDataChanged);
       } else {
         WinJS.log && WinJS.log("No accelerometer found in your machine. Put one in there.", "sample", "error");
@@ -358,5 +356,57 @@ run();
       };
       return $__generatorWrap($G);
     });
-  }), 2000);
+  }), 76);
+  timeOut = [];
+  setTimeout((function() {
+    go(function() {
+      var $that = this;
+      var $arguments = arguments;
+      var $state = 0;
+      var $storedException;
+      var $finallyFallThrough;
+      var $G = {
+        GState: 0,
+        current: undefined,
+        yieldReturn: undefined,
+        innerFunction: function($yieldSent, $yieldAction) {
+          while (true) switch ($state) {
+            case 0:
+              this.current = put(timeOut, 99);
+              $state = 1;
+              return true;
+            case 1:
+              if ($yieldAction == 1) {
+                $yieldAction = 0;
+                throw $yieldSent;
+              }
+              $state = 3;
+              break;
+            case 3:
+              $state = -2;
+            case -2:
+              return false;
+            case -3:
+              throw $storedException;
+            default:
+              throw "traceur compiler bug: invalid state in state machine" + $state;
+          }
+        },
+        moveNext: function($yieldSent, $yieldAction) {
+          while (true) try {
+            return this.innerFunction($yieldSent, $yieldAction);
+          } catch ($caughtException) {
+            $storedException = $caughtException;
+            switch ($state) {
+              default:
+                this.GState = 3;
+                $state = -2;
+                throw $storedException;
+            }
+          }
+        }
+      };
+      return $__generatorWrap($G);
+    });
+  }), 2500);
 })();

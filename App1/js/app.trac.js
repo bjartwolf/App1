@@ -70,15 +70,22 @@ var run = function (){
         function*(){
             var acc = yield take(c);
             document.getElementById("acceleration").innerHTML = acc;
-            run()
+            run();
         },
         function*(){
             var tid = yield take(timer);
+            document.getElementById("timer").innerHTML = tid;
+            run();
+        }/*,
+        function*(){
+            var tid = yield take(timeOut);
             document.getElementById("timer").innerHTML = "TIMEOUT";
-            run()
-        }]);
-        };
-        run();
+            document.getElementById("acceleration").innerHTML = "TIMEOUT";
+            run();
+        }*/
+        ]);
+    };
+run();
 
 
 (function () {
@@ -89,11 +96,7 @@ var run = function (){
         ready: function (element, options) {
             accelerometer = Windows.Devices.Sensors.Accelerometer.getDefault();
             if (accelerometer) {
-                // Select a report interval that is both suitable for the purposes of the app and supported by the sensor.
-                // This value will be used later to activate the sensor.
-                var minimumReportInterval = accelerometer.minimumReportInterval;
-                reportInterval = minimumReportInterval > 16 ? minimumReportInterval : 16;
-	            accelerometer.reportInterval = reportInterval;
+	            accelerometer.reportInterval = 200;
 		        accelerometer.addEventListener("readingchanged", onDataChanged);
             } else {
                 WinJS.log && WinJS.log("No accelerometer found in your machine. Put one in there.", "sample", "error");
@@ -114,12 +117,12 @@ var run = function (){
     	go(function* () {
     	    yield put(timer, i++);
     	});
-    },2000)
+    },76)
 
-    //timeOut = [];
-    //setTimeout( () => {
-    //    go(function* () {
-    //        yield put(timeOut, 99);
-    //    });
-    //},2500)
+    timeOut = [];
+    setTimeout( () => {
+        go(function* () {
+            yield put(timeOut, 99);
+        });
+    },2500)
 })();
