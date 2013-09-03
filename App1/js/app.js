@@ -116,7 +116,7 @@ function take(chan) {
 var c = [];
 var timer = [];
 var timeOut = [];
-var run = function() {
+(function run() {
   select([[c, function() {
     var $that = this;
     var $arguments = arguments;
@@ -301,8 +301,7 @@ var run = function() {
     };
     return $__generatorWrap($G);
   }]]);
-};
-run();
+})();
 (function() {
   var reportInterval = 0;
   var accelerometer;

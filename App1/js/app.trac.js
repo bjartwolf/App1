@@ -68,7 +68,7 @@ function take(chan) {
 var c = [];
 var timer = [];
 var timeOut = [];
-var run = function (){
+(function run (){
     select([
         [c, function*(){
             var acc = yield take(c);
@@ -85,8 +85,7 @@ var run = function (){
             document.getElementById("timer").innerHTML = "TIMEOUT";
             document.getElementById("acceleration").innerHTML = "TIMEOUT";
         }]]);
-    };
-run();
+    })();
 
 
 (function () {
