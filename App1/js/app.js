@@ -53,21 +53,22 @@ var $__generatorWrap = function(generator) {
     }
   });
 };
-function select(channels, machines) {
+function select(selectmap) {
+  var i = 0;
   var channel;
-  var i;
-  for (i = 0; i < channels.length; i++) {
-    if (channels[i].length != 0) {
-      channel = channels[i];
+  for (i = 0; i < selectmap.length; i++) {
+    var ch = selectmap[i][0];
+    if (ch.length != 0) {
+      channel = ch;
       break;
     }
   }
   if (channel == undefined) {
     setImmediate((function() {
-      select(channels, machines);
+      select(selectmap);
     }));
   } else {
-    go(machines[i]);
+    go(selectmap[i][1]);
   }
 }
 function go2(machine, step) {
@@ -116,7 +117,7 @@ var c = [];
 var timer = [];
 var timeOut = [];
 var run = function() {
-  select([c, timer, timeOut], [function() {
+  select([[c, function() {
     var $that = this;
     var $arguments = arguments;
     var $state = 0;
@@ -177,7 +178,7 @@ var run = function() {
       }
     };
     return $__generatorWrap($G);
-  }, function() {
+  }], [timer, function() {
     var $that = this;
     var $arguments = arguments;
     var $state = 0;
@@ -238,7 +239,7 @@ var run = function() {
       }
     };
     return $__generatorWrap($G);
-  }, function() {
+  }], [timeOut, function() {
     var $that = this;
     var $arguments = arguments;
     var $state = 0;
@@ -299,7 +300,7 @@ var run = function() {
       }
     };
     return $__generatorWrap($G);
-  }]);
+  }]]);
 };
 run();
 (function() {

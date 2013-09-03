@@ -1,18 +1,20 @@
-﻿function select(channels, machines) {
+﻿
+function select(selectmap) {
+    var i = 0;
     var channel;
-    var i;
     // Find the index of a non-empty channel
-    for (i = 0; i < channels.length; i++) {
-        if (channels[i].length != 0) {
-            channel = channels[i];
+    for (i = 0; i < selectmap.length; i++) {
+        var ch = selectmap[i][0];
+        if (ch.length != 0) { 
+            channel = ch;
             break;
         }
     }
     if (channel  == undefined) {
-        setImmediate(()=> {select(channels, machines);});
+        setImmediate(()=> {select(selectmap);});
     } else {
         // execute channel, hopefully channel is in closure of machine
-        go(machines[i]);
+        go(selectmap[i][1]);
     }  
 }
 
@@ -26,7 +28,7 @@ function go2(machine, step) {
       case "park":
         setImmediate(() => { go2(machine, step); });
         return;
-        break;
+        break   ;
       case "continue":
         step = machine.next(value);
         break;
@@ -67,23 +69,22 @@ var c = [];
 var timer = [];
 var timeOut = [];
 var run = function (){
-    select([c, timer, timeOut], [
-        function*(){
+    select([
+        [c, function*(){
             var acc = yield take(c);
             document.getElementById("acceleration").innerHTML = acc;
             run();
-        },
-        function*(){
+        }],
+        [timer, function*(){
             var tid = yield take(timer);
             document.getElementById("timer").innerHTML = tid;
             run();
-        },
-        function*(){
+        }],
+        [timeOut, function*(){
             var tid = yield take(timeOut);
             document.getElementById("timer").innerHTML = "TIMEOUT";
             document.getElementById("acceleration").innerHTML = "TIMEOUT";
-        }
-        ]);
+        }]]);
     };
 run();
 
