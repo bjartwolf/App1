@@ -1,21 +1,43 @@
 ﻿
-function select(selectmap) {
+function select(channelFunctionPair) {
     var i = 0;
     var channel;
     // Find the index of a non-empty channel
-    for (i = 0; i < selectmap.length; i++) {
-        var ch = selectmap[i][0];
+    for (i = 0; i < channelFunctionPair.length; i++) {
+        var ch = channelFunctionPair[i][0];
         if (ch.length != 0) { 
             channel = ch;
             break;
         }
     }
     if (channel  == undefined) {
-        setImmediate(()=> {select(selectmap);});
+        setImmediate(()=> {select(channelFunctionPair);});
     } else {
         // execute channel, hopefully channel is in closure of machine
-        go(selectmap[i][1]);
+        go(channelFunctionPair[i][1]);
     }  
+}
+
+
+function selectforever(channelFunctionPair) {
+    var i = 0;
+    var channel;
+    // Find the index of a non-empty channel
+    for (i = 0; i < channelFunctionPair.length; i++) {
+        var ch = channelFunctionPair[i][0];
+        if (ch.length != 0) { 
+            channel = ch;
+            break;
+        }
+    }
+    if (channel  == undefined) {
+        setImmediate(()=> {selectforever(channelFunctionPair);});
+} else {
+// execute channel, hopefully channel is in closure of machine
+// wrap in callback
+    go(channelFunctionPair[i][1]);
+    selectforever(channelFunctionPair);
+}  
 }
 
 
@@ -68,24 +90,35 @@ function take(chan) {
 var c = [];
 var timer = [];
 var timeOut = [];
-(function run (){
-    select([
-        [c, function*(){
-            var acc = yield take(c);
-            document.getElementById("acceleration").innerHTML = acc;
-            run();
-        }],
-        [timer, function*(){
-            var tid = yield take(timer);
-            document.getElementById("timer").innerHTML = tid;
-            run();
-        }],
-        [timeOut, function*(){
-            var tid = yield take(timeOut);
-            document.getElementById("timer").innerHTML = "TIMEOUT";
-            document.getElementById("acceleration").innerHTML = "TIMEOUT";
-        }]]);
-    })();
+
+selectforever([
+    [c, function*(){
+        var acc = yield take(c);
+        document.getElementById("acceleration").innerHTML = acc;
+    }],
+    [timer, function*(){
+        var tid = yield take(timer);
+        document.getElementById("timer").innerHTML = tid;
+    }]]);
+
+//(function run (){
+//    select([
+//        [c, function*(){
+//            var acc = yield take(c);
+//            document.getElementById("acceleration").innerHTML = acc;
+//            run();
+//        }],
+//        [timer, function*(){
+//            var tid = yield take(timer);
+//            document.getElementById("timer").innerHTML = tid;
+//            run();
+//        }],
+//        [timeOut, function*(){
+//            var tid = yield take(timeOut);
+//            document.getElementById("timer").innerHTML = "TIMEOUT";
+//            document.getElementById("acceleration").innerHTML = "TIMEOUT";
+//        }]]);
+//    })();
 
 
 (function () {
