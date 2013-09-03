@@ -256,7 +256,6 @@ select([[makeTimeout(500), function() {
   var $state = 0;
   var $storedException;
   var $finallyFallThrough;
-  var test;
   var $G = {
     GState: 0,
     current: undefined,
@@ -264,7 +263,7 @@ select([[makeTimeout(500), function() {
     innerFunction: function($yieldSent, $yieldAction) {
       while (true) switch ($state) {
         case 0:
-          this.current = take(makeTimeout(0));
+          this.current = take(["timed out"]);
           $state = 1;
           return true;
         case 1:
@@ -275,14 +274,29 @@ select([[makeTimeout(500), function() {
           $state = 3;
           break;
         case 3:
-          test = $yieldSent;
+          document.getElementById("timeout").innerHTML = $yieldSent;
           $state = 5;
           break;
         case 5:
-          document.getElementById("timeout").innerHTML = "timed out";
+          this.current = take(makeTimeout(1000));
           $state = 7;
-          break;
+          return true;
         case 7:
+          if ($yieldAction == 1) {
+            $yieldAction = 0;
+            throw $yieldSent;
+          }
+          $state = 9;
+          break;
+        case 9:
+          document.getElementById("timeout").innerHTML = $yieldSent;
+          $state = 11;
+          break;
+        case 11:
+          document.getElementById("timeout").innerHTML = "woooow....";
+          $state = 13;
+          break;
+        case 13:
           $state = -2;
         case -2:
           return false;
@@ -313,7 +327,6 @@ select([[makeTimeout(500), function() {
   var $state = 0;
   var $storedException;
   var $finallyFallThrough;
-  var test;
   var $G = {
     GState: 0,
     current: undefined,
@@ -321,7 +334,7 @@ select([[makeTimeout(500), function() {
     innerFunction: function($yieldSent, $yieldAction) {
       while (true) switch ($state) {
         case 0:
-          this.current = take(makeTimeout(0));
+          this.current = take(["and this timed out but it should never"]);
           $state = 1;
           return true;
         case 1:
@@ -332,14 +345,10 @@ select([[makeTimeout(500), function() {
           $state = 3;
           break;
         case 3:
-          test = $yieldSent;
+          document.getElementById("timeout").innerHTML = $yieldSent;
           $state = 5;
           break;
         case 5:
-          document.getElementById("timer").innerHTML = "and this timed out but it should never";
-          $state = 7;
-          break;
-        case 7:
           $state = -2;
         case -2:
           return false;

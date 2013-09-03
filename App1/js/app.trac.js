@@ -106,12 +106,12 @@ selectforever([
 
 select([
     [makeTimeout(500), function*(){
-        var test = yield take(makeTimeout(0))
-        document.getElementById("timeout").innerHTML = "timed out";
+        document.getElementById("timeout").innerHTML = yield take(["timed out"]);
+        document.getElementById("timeout").innerHTML = yield take(makeTimeout(1000));
+        document.getElementById("timeout").innerHTML = "woooow....";
     }],
     [makeTimeout(1000), function*(){
-        var test = yield take(makeTimeout(0))
-        document.getElementById("timer").innerHTML = "and this timed out but it should never";
+        document.getElementById("timeout").innerHTML = yield take(["and this timed out but it should never"]);
     }]]);
 
 
