@@ -101,6 +101,21 @@ selectforever([
         document.getElementById("timer").innerHTML = tid;
     }]]);
 
+// Perhaps replicate some of the more interesting examples from golang
+// For example timing out a web-request
+
+select([
+    [makeTimeout(500), function*(){
+        var test = yield take(makeTimeout(0))
+        document.getElementById("timeout").innerHTML = "timed out";
+    }],
+    [makeTimeout(1000), function*(){
+        var test = yield take(makeTimeout(0))
+        document.getElementById("timer").innerHTML = "and this timed out but it should never";
+    }]]);
+
+
+
 //(function run (){
 //    select([
 //        [c, function*(){
@@ -120,6 +135,16 @@ selectforever([
 //        }]]);
 //    })();
 
+function makeTimeout(delay) {
+    var timeOut = [];
+    setTimeout( () => {
+        go(function* () {
+            yield put(timeOut, 'timeout after ' + delay + ' ms');
+        });
+        },delay);
+    return timeOut;
+}
+ 
 
 (function () {
     var reportInterval = 0;
